@@ -47,7 +47,7 @@ Enhances raw image frames and writes processed image outputs for downstream cont
 
 `2_extract_centralline_smooth.py`
 
-Extracts the main centerline or boundary-related curve from the enhanced image output, then applies smoothing to produce a more stable curve representation for masking and fitting.
+Extracts the main centerline from the enhanced image output, then applies smoothing to produce a more stable curve representation for masking and fitting.
 
 ### 3. Mask Generation
 
@@ -59,7 +59,7 @@ Generates mask images for the target region. The masks define the region used fo
 
 `4_fit_skech_full.py`
 
-Fits and regularizes the target contour or curve from the masked image data. The fitted result is used as the primary outline for later overlay visualization and centroid-based displacement measurements.
+Fits and regularizes the target contour from the masked image data. The fitted result is used as the primary outline for later overlay visualization and centroid-based displacement measurements.
 
 ### 5. Overlay Generation
 
