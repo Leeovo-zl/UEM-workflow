@@ -94,8 +94,6 @@ OUT_ON_EXT_FMT    = "spots_on_external_gray_{pol}_thick.png"
 CSV_FIELDNAMES = [
     "tag", "t", "polarity", "base_dir", "row", "col", "sigma", "area_px",
     "pixel_nm",
-    "frame_center_row", "frame_center_col",
-    "dist_frame_center_px", "dist_frame_center_nm",
     "row0_t0", "col0_t0",
     "delta_row_px", "delta_col_px", "delta_disp_px",
     "delta_row_nm", "delta_col_nm", "delta_disp_nm",
@@ -496,30 +494,14 @@ def process_one_tag(tag: str, base_dir: Optional[Path] = None, frame_index: Opti
     if ext_gray.shape != (H, W):
         ext_gray = resize(ext_gray, (H, W), preserve_range=True, anti_aliasing=True).astype(np.float32)
 
-    # 3) frame center in pixel coordinates
-    frame_ctr = ( (H - 1) / 2.0, (W - 1) / 2.0 )
-
     all_rows = []
     spots = detect_darkest_region(gray, poly_mask, ctr)
     rows, approx_R = filter_and_collect(spots, poly_mask, ctr, H, W, tag, base_dir, SPOT_POLARITY)
 
     for rr in rows:
-        r = float(rr["row"]); c = float(rr["col"])
-
-        # Distance to frame center
-        drow_fc = r - frame_ctr[0]
-        dcol_fc = c - frame_ctr[1]
-        dist_frame_center_px = float(np.hypot(drow_fc, dcol_fc))
-        dist_frame_center_nm = dist_frame_center_px * PIXEL_NM
-
         rr.update({
             "t": float(t_s),
             "pixel_nm": float(PIXEL_NM),
-
-            "frame_center_row": float(frame_ctr[0]),
-            "frame_center_col": float(frame_ctr[1]),
-            "dist_frame_center_px": dist_frame_center_px,
-            "dist_frame_center_nm": dist_frame_center_nm,
 
             "row0_t0": np.nan,
             "col0_t0": np.nan,

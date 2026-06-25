@@ -280,9 +280,6 @@ def _filter_and_select_rows(df, t_col):
         elif "disp_t0_nm" in df.columns:
             df = df.sort_values([t_col, "disp_t0_nm"], ascending=[True, True])
             df = df.groupby(t_col, as_index=False).first()
-        elif "dist_frame_center_nm" in df.columns:
-            df = df.sort_values([t_col, "dist_frame_center_nm"], ascending=[True, True])
-            df = df.groupby(t_col, as_index=False).first()
         else:
             df = df.sort_values(t_col).drop_duplicates(t_col, keep="first")
     return df
