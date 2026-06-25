@@ -77,7 +77,7 @@ Measures frame-by-frame centroid displacement from the fitted outline images. Th
 
 `7_black_spot_detector.py`
 
-Detects the darkest region inside the fitted polygon and records its position. The script outputs `spots_inside_polygon_single.csv`, including spot coordinates, distance to the frame center, and displacement relative to the first frame.
+Detects the darkest region inside the fitted polygon and records its position. The script outputs `spots_inside_polygon_single.csv`, including spot coordinates and displacement relative to the first frame.
 
 ### 8. FFT Bandpass and Chirality Analysis
 
