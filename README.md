@@ -12,7 +12,7 @@ UEM workflow/
   1_image_enhance_full.py
   2_extract_centralline_smooth.py
   3_mask.py
-  4_fit_skech_full.py
+  4_fit_sketch_full.py
   5_overlay.py
   6_centroid_displacement.py
   7_black_spot_detector.py
@@ -57,7 +57,7 @@ Generates mask images for the target region. The masks define the region used fo
 
 ### 4. Fitted Curve Generation
 
-`4_fit_skech_full.py`
+`4_fit_sketch_full.py`
 
 Fits and regularizes the target contour from the masked image data. The fitted result is used as the primary outline for later overlay visualization and centroid-based displacement measurements.
 
@@ -93,7 +93,7 @@ Run the scripts from the `UEM workflow/` folder in numerical order:
 python 1_image_enhance_full.py
 python 2_extract_centralline_smooth.py
 python 3_mask.py
-python 4_fit_skech_full.py
+python 4_fit_sketch_full.py
 python 5_overlay.py
 python 6_centroid_displacement.py
 python 7_black_spot_detector.py
