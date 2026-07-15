@@ -1,23 +1,84 @@
 # UEM Workflow
 
-This repository contains a cleaned Python workflow for processing image-based UEM data and extracting motion descriptors from fitted contours and dark spot positions. The scripts are organized as numbered steps in `UEM workflow/` and are intended to be run in order.
+This repository contains a cleaned Python workflow for processing image-based ultrafast electron microscopy (UEM) data and extracting motion descriptors from fitted contours and dark spot positions. The scripts are organized as numbered steps in `UEM workflow/` and are intended to be run in order.
 
-The repository contains code only. Raw images, intermediate data, and local machine-specific paths are intentionally not included.
+The workflow uses a shared path configuration file, avoids hard-coded local machine paths, and writes derived results under the configured data folder.
+
+Repository link: <https://github.com/Leeovo-zl/UEM-workflow>
 
 ## Repository Layout
 
 ```text
-UEM workflow/
-  workflow_paths.py
-  1_image_enhance_full.py
-  2_extract_centralline_smooth.py
-  3_mask.py
-  4_fit_sketch_full.py
-  5_overlay.py
-  6_centroid_displacement.py
-  7_black_spot_detector.py
-  8_fft_bandpass_filter_Pchirality.py
+UEM-workflow/
+  README.md
+  demo/
+    T0.png ... T7.png
+  UEM workflow/
+    workflow_paths.py
+    1_image_enhance_full.py
+    2_extract_centralline_smooth.py
+    3_mask.py
+    4_fit_sketch_full.py
+    5_overlay.py
+    6_centroid_displacement.py
+    7_black_spot_detector.py
+    8_fft_bandpass_filter_Pchirality.py
 ```
+
+The `demo/` folder contains a small simulated image sequence covering one period of the motion. Generated outputs are not required before running the workflow; they are created by the scripts.
+
+## System Requirements
+
+### Operating System
+
+The workflow has been tested on:
+
+- Windows 11, 64-bit
+
+The scripts use standard Python libraries and should also run on macOS or Linux after adapting the shell commands and paths.
+
+### Python and Dependencies
+
+Tested Python version:
+
+- Python 3.13.5
+
+Tested package versions:
+
+- `numpy==2.2.6`
+- `pandas==3.0.2`
+- `scipy==1.16.1`
+- `scikit-image==0.25.2`
+- `matplotlib==3.10.6`
+- `imageio==2.37.0`
+- `Pillow==11.3.0`
+
+No non-standard hardware is required. The workflow runs on CPU and does not require a GPU.
+
+## Installation
+
+Clone the repository:
+
+```powershell
+git clone https://github.com/Leeovo-zl/UEM-workflow.git
+cd UEM-workflow
+```
+
+Create and activate a Python environment:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+```
+
+Install the required packages:
+
+```powershell
+python -m pip install numpy pandas scipy scikit-image matplotlib imageio pillow
+```
+
+Typical installation time on a normal desktop computer with an internet connection is approximately 5-10 minutes.
 
 ## Path Configuration
 
@@ -27,13 +88,67 @@ All scripts use `workflow_paths.py` for shared input and output locations. By de
 UEM workflow/data/raw
 ```
 
-For real runs, set the environment variable `TEM_RAW_ROOT` to the folder that contains the image-frame subfolders. Relative paths are resolved from the script directory.
+For real runs or for the demo dataset, set the environment variable `TEM_RAW_ROOT` to the folder that contains the image frames. Relative paths are resolved from the script directory.
+
+Example from PowerShell:
 
 ```powershell
-$env:TEM_RAW_ROOT = "path/to/your/raw/data"
+cd "UEM workflow"
+$env:TEM_RAW_ROOT = (Resolve-Path "..\demo").Path
 ```
 
 Derived outputs are written under the configured raw-data root, mainly in the `displacement/` subfolder.
+
+## Demo
+
+The `demo/` folder provides eight simulated PNG images named `T0.png` through `T7.png`. To run the complete workflow on the demo dataset, start from the `UEM workflow/` folder and execute:
+
+```powershell
+$env:TEM_RAW_ROOT = (Resolve-Path "..\demo").Path
+
+python 1_image_enhance_full.py
+python 2_extract_centralline_smooth.py
+python 3_mask.py
+python 4_fit_sketch_full.py
+python 5_overlay.py
+python 6_centroid_displacement.py
+python 7_black_spot_detector.py
+python 8_fft_bandpass_filter_Pchirality.py
+```
+
+Expected demo runtime on the tested Windows desktop is approximately 4-5 minutes. The exact runtime depends on CPU speed and Python package builds.
+
+### Expected Demo Output
+
+After a successful demo run, the repository should contain one generated folder per frame:
+
+```text
+demo/T0/
+demo/T1/
+...
+demo/T7/
+```
+
+The main quantitative outputs are:
+
+```text
+demo/displacement/centroid_results_all.csv
+demo/displacement/spots_inside_polygon_single.csv
+demo/displacement/fft_bandpass/askyframe/bandpassed_timeseries.csv
+demo/displacement/fft_bandpass/askyframe/fit_params.csv
+demo/displacement/fft_bandpass/askyframe/snr_report.txt
+demo/displacement/fft_bandpass/askyframe/snr_total.csv
+demo/displacement/fft_bandpass/askyframe/fit_expressions_all.txt
+demo/displacement/fft_bandpass/vortex_core/bandpassed_timeseries.csv
+demo/displacement/fft_bandpass/vortex_core/fit_params.csv
+demo/displacement/fft_bandpass/vortex_core/snr_report.txt
+demo/displacement/fft_bandpass/vortex_core/snr_total.csv
+demo/displacement/fft_bandpass/vortex_core/fit_expressions_all.txt
+```
+
+For the provided eight-frame demo, `centroid_results_all.csv` should contain 8 data rows and `spots_inside_polygon_single.csv` should contain 8 data rows. The cleaned Step 8 script writes CSV and TXT outputs only; it does not write PNG plots.
+
+Intermediate PNG outputs are generated by Steps 1-7 and can be used to visually inspect image enhancement, centerline extraction, masking, curve fitting, overlay quality, centroid displacement, and dark spot detection.
 
 ## Workflow Steps
 
@@ -83,13 +198,21 @@ Detects the darkest region inside the fitted polygon and records its position. T
 
 `8_fft_bandpass_filter_Pchirality.py`
 
-Applies FFT-domain bandpass filtering to the displacement time series, fits target-frequency cosine/sine components, estimates handedness, decomposes fitted motion into clockwise and counter-clockwise circular components, and writes CSV/TXT summaries. PNG plotting output is not generated in this cleaned version.
+Applies FFT-domain bandpass filtering to the displacement time series, fits target-frequency cosine/sine components, estimates handedness, decomposes fitted motion into clockwise and counter-clockwise circular components, and writes CSV/TXT summaries.
 
-## Typical Run Order
+## Running the Workflow on New Data
 
-Run the scripts from the `UEM workflow/` folder in numerical order:
+1. Place the raw PNG image frames in a data folder.
+2. Set `TEM_RAW_ROOT` to that data folder.
+3. Review the parameter block near the top of each script, especially frame selection, time step, pixel-to-nanometer scale, ROI settings, and FFT target frequencies.
+4. Run the scripts in numerical order from `1_image_enhance_full.py` to `8_fft_bandpass_filter_Pchirality.py`.
+5. Check the intermediate PNG outputs from Steps 1-7 before interpreting the quantitative CSV/TXT results.
+
+Example:
 
 ```powershell
+cd "UEM workflow"
+$env:TEM_RAW_ROOT = "path\to\your\raw\data"
 python 1_image_enhance_full.py
 python 2_extract_centralline_smooth.py
 python 3_mask.py
@@ -100,23 +223,10 @@ python 7_black_spot_detector.py
 python 8_fft_bandpass_filter_Pchirality.py
 ```
 
-Before running, review the parameter block at the top of each script and adjust mode, frame range, time step, and pixel-to-nanometer scale as needed for the dataset.
+## Reproduction Notes
 
-## Main Outputs
+The demo dataset is intended to confirm that the software installation and workflow execution are functioning correctly. Reproducing manuscript-scale quantitative results requires the corresponding experimental image sequence and dataset-specific parameter settings, including the pixel scale, time step, frame range, ROI configuration, and target frequencies.
 
-Common downstream outputs include:
+## License
 
-- `displacement/centroid_results_all.csv`
-- `displacement/spots_inside_polygon_single.csv`
-- `displacement/fft_bandpass/askyframe/bandpassed_timeseries.csv`
-- `displacement/fft_bandpass/askyframe/fit_params.csv`
-- `displacement/fft_bandpass/askyframe/snr_report.txt`
-- `displacement/fft_bandpass/vortex_core/bandpassed_timeseries.csv`
-- `displacement/fft_bandpass/vortex_core/fit_params.csv`
-- `displacement/fft_bandpass/vortex_core/snr_report.txt`
-
-## Notes
-
-- The scripts use generic sample folder names and shared path configuration to avoid hard-coded local paths.
-- Raw data and generated results are not tracked in this repository.
-- Review scale and timing parameters before applying the workflow to a new dataset.
+No separate license file is currently included. Before redistribution or reuse outside manuscript review, add an explicit open-source license file or contact the authors for permission terms.
