@@ -127,7 +127,7 @@ Extracts the main centerline from the enhanced image output, then applies smooth
 
 `3_mask.py`
 
-Generates mask images for the target region. The masks define the region used for contour fitting and help exclude irrelevant background or non-target structures.
+Generates mask images for the target region. The masks define the region used for contour fitting and help exclude irrelevant background or non-target structures. Small outward protrusions arising from fragmented domain-wall segments are manually removed to prevent them from affecting subsequent boundary fitting.
 
 ### 4. Fitted Curve Generation
 
