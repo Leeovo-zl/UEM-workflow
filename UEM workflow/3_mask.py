@@ -46,7 +46,7 @@ CFG_TEMPLATE = {
     # ROI1 keeps skeleton pixels inside this region.
     "roi1": {
         "mode": "rect",  # rect / circle / polygon / mask_file
-        "rect": {"x0": 212, "y0": 180, "x1": 790, "y1": 930},
+        "rect": {"x0": 240, "y0": 228, "x1": 780, "y1": 860},
         "circle": {"cx": 550, "cy": 550, "r": 320},
         "polygon": {"points": [(200, 200), (900, 180), (940, 800), (240, 820)]},
         "mask_file": {"path": "roi_mask.png"},
@@ -54,7 +54,7 @@ CFG_TEMPLATE = {
     # ROI2 removes skeleton pixels inside this region.
     "roi2": {
         "mode": "rect",  # rect / circle / polygon / mask_file
-        "rect": {"x0": 390, "y0": 320, "x1": 620, "y1": 780},
+        "rect": {"x0": 280, "y0": 248, "x1": 740, "y1": 824},
         "circle": {"cx": 550, "cy": 550, "r": 150},
         "polygon": {"points": [(0, 0), (0, 0), (0, 0)]},
         "mask_file": {"path": "roi_exclude_mask.png"},

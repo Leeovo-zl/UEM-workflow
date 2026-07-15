@@ -41,7 +41,7 @@ PARAMS = {
     "denoise_sigma": 0.4,    # 0.3~1.2
 
     # Ridge detection: sigma range should match ridge width (pixels)
-    "black_ridges": True,  # False=detect bright centerline; True=detect dark centerline
+    "black_ridges": False,  # False=detect bright centerline; True=detect dark centerline
     "ridge_sigma_min": 6,
     "ridge_sigma_max": 18,
     "ridge_sigma_step": 3,
