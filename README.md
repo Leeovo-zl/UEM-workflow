@@ -244,7 +244,7 @@ Generated inside each frame folder:
 
 - `skeleton_masked.png`
 
-  ![Masked skeleton](docs/figures/skeleton_masked.png)
+  ![Masked skeleton](docs/figures/skeleton_masked.png?v=59d162c)
 
 #### Step 4: Fitted Curve Generation
 
